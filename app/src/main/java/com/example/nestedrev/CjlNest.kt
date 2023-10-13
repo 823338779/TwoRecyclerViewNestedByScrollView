@@ -8,10 +8,10 @@ import android.widget.LinearLayout
 import androidx.core.view.ViewCompat
 import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import com.example.nestedrev.CartNestedHelper.showUpper
 import java.lang.Integer.max
 import java.lang.Math.abs
+import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.math.min
 
 class CjlNest @JvmOverloads constructor(
@@ -25,7 +25,7 @@ class CjlNest @JvmOverloads constructor(
     private var revHolder1: RevHolder? = null
     private var revHolder2: RevHolder? = null
     var llv: LinearLayout? = null
-
+    var fra: View? = null
     private fun getName(o: View): String {
         if (o == rev1) {
             return "rev1"
@@ -35,45 +35,11 @@ class CjlNest @JvmOverloads constructor(
         return "NO"
     }
 
-    private fun getState(ste: Int): String {
-        if (ste == 0) {
-            return "IDLE"
-        } else if (ste == 1) {
-            return "DRAG"
-        } else {
-            return "FLING"
-        }
-    }
-
     fun setUpRev(r1: RecyclerView, r2: RecyclerView) {
         rev1 = r1
         rev2 = r2
-
-        rev1!!.addOnScrollListener(object : OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-
-                Log.e("change", "1: ${getState(newState)}")
-                super.onScrollStateChanged(recyclerView, newState)
-            }
-
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-//                Log.e("change", "1: $dy")
-                super.onScrolled(recyclerView, dx, dy)
-            }
-        })
-        rev2!!.addOnScrollListener(object : OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                Log.e("change", "2: ${getState(newState)}")
-                super.onScrollStateChanged(recyclerView, newState)
-            }
-
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-//                Log.e("change", "2: $dy")
-                super.onScrolled(recyclerView, dx, dy)
-            }
-        })
-        revHolder1 = RevHolder(r1)
-        revHolder2 = RevHolder(r2)
+        revHolder1 = RevHolder(this, r1, getName(r1))
+        revHolder2 = RevHolder(this, r2, getName(r2))
     }
 
     // 没有返回值, 只是给与一个回调表示已经接收到滚动
@@ -82,11 +48,21 @@ class CjlNest @JvmOverloads constructor(
         super.onNestedScrollAccepted(child, target, axes)
     }
 
+    // 标记手指按下去的时候是否正在滚动
+    val downWhenScrolling = AtomicBoolean(false)
+
     override fun onStartNestedScroll(child: View, target: View, axes: Int, type: Int): Boolean {
+        // 记录手指按下去的时候是否正在滚动
+        Log.e("cjlcjl", "${rev1!!.scrollState != 0 || rev2!!.scrollState != 0}, ${rev1!!.scrollState} - ${rev2!!.scrollState}")
+        downWhenScrolling.set(rev1!!.scrollState != 0 || rev2!!.scrollState != 0)
+
         // 如果是touch类型的话, 就需要手动停止. 防止两个RecyclerView同时在fling[这个很关键]
         if (type == ViewCompat.TYPE_TOUCH) {
-            rev1!!.stopScroll()
-            rev2!!.stopScroll()
+            if (target == rev1) {
+                rev2!!.stopScroll()
+            } else {
+                rev1!!.stopScroll()
+            }
         }
         val temp = super.onStartNestedScroll(child, target, axes, type)
         cloge("start: ${getName(target)} type: ${type}")
@@ -95,7 +71,6 @@ class CjlNest @JvmOverloads constructor(
 
     // consumed表示父组件先消费多少, x, y, 剩余的会转给子组件
     override fun onNestedPreScroll(target: View, dx: Int, dy: Int, consumed: IntArray, type: Int) {
-
         if (type == 1) {
             cloge("fling pre scroll ${dy}")
         } else {
@@ -149,13 +124,11 @@ class CjlNest @JvmOverloads constructor(
     override fun onStopNestedScroll(target: View, type: Int) {
         if (type == 1) {
             if (target == rev1) {
-                Log.e("cjlStop", "${revHolder1!!.getVelocityValue()}")
                 if (rev2!!.canScrollVertically(revHolder1!!.getVelocityValue().toInt())) {
                     rev2!!.fling(0, revHolder1!!.getVelocityValue().toInt())
                 }
             }
             if (target == rev2) {
-                Log.e("cjlStop", "${revHolder2!!.getVelocityValue()}")
                 if (rev1!!.canScrollVertically(revHolder2!!.getVelocityValue().toInt())) {
                     rev1!!.fling(0, revHolder2!!.getVelocityValue().toInt())
                 }
@@ -224,10 +197,6 @@ class CjlNest @JvmOverloads constructor(
     }
 
     override fun onNestedPreFling(target: View, velocityX: Float, velocityY: Float): Boolean {
-        Log.e("cjl", "vy: ${velocityY}")
-//        cloge("target: ${getName(target)} vy: ${velocityY}")
-        Log.e("cjlfling", "target: ${getName(target)} vy: ${velocityY}")
-
         return false
 //        return super.onNestedPreFling(target, velocityX, velocityY)
 //        return !target.canScrollVertically(velocityY.toInt())
@@ -260,6 +229,8 @@ class CjlNest @JvmOverloads constructor(
         if (type == 1) {
             Log.e("cjlStop", "type: ${type}")
         }
+//        Log.e("cjlcjl", "false")
+//        flag.set(false)
         super.stopNestedScroll(type)
     }
 }

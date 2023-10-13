@@ -24,5 +24,14 @@ object CartNestedHelper {
         val range = rv.computeVerticalScrollRange() - rv.computeVerticalScrollExtent()
         return range - offset
     }
+    fun getCjlState(ste: Int): String {
+        if (ste == 0) {
+            return "IDLE"
+        } else if (ste == 1) {
+            return "DRAG"
+        } else {
+            return "FLING"
+        }
+    }
 
 }
