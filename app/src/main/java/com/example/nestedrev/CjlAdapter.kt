@@ -1,4 +1,4 @@
-package com.example.nested
+package com.example.nestedrev
 
 import android.view.ViewGroup
 import android.widget.TextView

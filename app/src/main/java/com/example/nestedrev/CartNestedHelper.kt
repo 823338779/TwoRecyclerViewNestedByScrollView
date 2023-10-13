@@ -1,4 +1,4 @@
-package com.example.nested
+package com.example.nestedrev
 
 import androidx.recyclerview.widget.RecyclerView
 

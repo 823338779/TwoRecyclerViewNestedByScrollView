@@ -1,4 +1,4 @@
-package com.example.nested
+package com.example.nestedrev
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
@@ -24,12 +24,14 @@ class RevHolder(val rev: RecyclerView) {
             mScrollerYObj = mScrollerY[obj2]
             mCurrVelocity = mScrollerYObj!!.javaClass.getDeclaredField("mCurrVelocity")
             mCurrVelocity?.isAccessible = true
+
         } catch (unused: Throwable) {
         }
     }
 
     fun getVelocityValue(): Float {
-        return ((mCurrVelocity?.get(mScrollerYObj) as? Float) ?: 0F) * 0.8f
+        val res = ((mCurrVelocity?.get(mScrollerYObj) as? Float) ?: 0F) * 0.8f
+        return res
     }
 
     fun itSelf(v: View): Boolean {

@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <com.example.nested.CjlNest
+    <com.example.nestedrev.CjlNest
         android:id="@+id/cjl_parent"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -30,5 +30,5 @@
                 android:layout_height="627dp"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
         </LinearLayout>
-    </com.example.nested.CjlNest>
+    </com.example.nestedrev.CjlNest>
 </androidx.constraintlayout.widget.ConstraintLayout>

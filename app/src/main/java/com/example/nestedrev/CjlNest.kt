@@ -1,16 +1,15 @@
-package com.example.nested
+package com.example.nestedrev
 
 import android.content.Context
 import android.util.AttributeSet
 import android.util.Log
-import android.view.VelocityTracker
 import android.view.View
 import android.widget.LinearLayout
 import androidx.core.view.ViewCompat
 import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnScrollListener
-import com.example.nested.CartNestedHelper.showUpper
+import com.example.nestedrev.CartNestedHelper.showUpper
 import java.lang.Integer.max
 import java.lang.Math.abs
 import kotlin.math.min
@@ -140,7 +139,6 @@ class CjlNest @JvmOverloads constructor(
         dyUnconsumed: Int
     ) {
         cloge("dy: ${dyUnconsumed}")
-
         super.onNestedScroll(target, dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed)
     }
 

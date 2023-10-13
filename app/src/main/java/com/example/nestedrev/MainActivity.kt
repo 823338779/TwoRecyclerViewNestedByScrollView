@@ -3,8 +3,6 @@ package com.example.nestedrev
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.recyclerview.widget.RecyclerView
-import com.example.nested.CjlAdapter
-import com.example.nested.CjlNest
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
