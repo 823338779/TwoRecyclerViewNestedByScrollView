@@ -30,6 +30,6 @@ class CjlAdapter : RecyclerView.Adapter<ViewHolder>() {
     }
 
     override fun getItemCount(): Int {
-        return 10
+        return 30
     }
 }

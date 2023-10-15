@@ -27,7 +27,6 @@ class RevHolder(val nestView: CjlNest, val rev: RecyclerView, val name: String) 
             mScrollerYObj = mScrollerY[obj2]
             mCurrVelocity = mScrollerYObj!!.javaClass.getDeclaredField("mCurrVelocity")
             mCurrVelocity?.isAccessible = true
-
         } catch (unused: Throwable) {
         }
         rev.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -47,7 +46,7 @@ class RevHolder(val nestView: CjlNest, val rev: RecyclerView, val name: String) 
             override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
                 // 如果它自己没在滚动、并且是从我这里抬起来的
                 if (e.action == MotionEvent.ACTION_UP) {
-                    Log.e("cjlcjl", "${nestView.downWhenScrolling.get()} - ${rv.scrollState == 0}")
+                    Log.e("cjlcjl", "${nestView.downWhenScrolling.get()} - ${rv.scrollState}")
                     // 如果手指按下去时候正在滚动，并且当前rev它没被划动，那么直接拦截掉这个up事件，不让rev消费到
                     if (nestView.downWhenScrolling.get() && rv.scrollState == 0) {
                         return true
@@ -67,7 +66,7 @@ class RevHolder(val nestView: CjlNest, val rev: RecyclerView, val name: String) 
     }
 
     fun getVelocityValue(): Float {
-        val res = ((mCurrVelocity?.get(mScrollerYObj) as? Float) ?: 0F) * 0.8f
+        val res = ((mCurrVelocity?.get(mScrollerYObj) as? Float) ?: 0F) * 0.7f
         return res
     }
 

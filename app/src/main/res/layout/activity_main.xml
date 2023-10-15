@@ -23,24 +23,24 @@
                 android:layout_height="627dp"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
+            <com.example.nestedrev.CjlNestForVec
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:background="#C1FFAA"
+                android:visibility="visible">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp" />
+
+            </com.example.nestedrev.CjlNestForVec>
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rev2"
-                android:background="#FF9B9B"
                 android:layout_width="match_parent"
                 android:layout_height="627dp"
+                android:background="#FF9B9B"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
         </LinearLayout>
     </com.example.nestedrev.CjlNest>
-    <View
-        android:id="@+id/fra"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-<!--    <androidx.recyclerview.widget.RecyclerView-->
-<!--        android:id="@+id/cjlRev"-->
-<!--            android:visibility="gone"-->
-
-<!--        android:layout_width="match_parent"-->
-<!--        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"-->
-<!--        android:layout_height="match_parent"-->
-<!--        />-->
 </androidx.constraintlayout.widget.ConstraintLayout>
