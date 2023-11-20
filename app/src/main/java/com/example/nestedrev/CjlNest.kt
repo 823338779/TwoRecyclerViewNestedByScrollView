@@ -78,6 +78,7 @@ class CjlNest @JvmOverloads constructor(
 
     // consumed表示父组件先消费多少, x, y, 剩余的会转给子组件
     override fun onNestedPreScroll(target: View, dx: Int, dy: Int, consumed: IntArray, type: Int) {
+        cloge("${getName(target)}, ${dy}")
         super.onNestedPreScroll(target, dx, dy, consumed, type)
         if (showUpper(dy)) {
             /**
@@ -107,14 +108,6 @@ class CjlNest @JvmOverloads constructor(
         }
     }
 
-    override fun dispatchNestedPreFling(velocityX: Float, velocityY: Float): Boolean {
-        return super.dispatchNestedPreFling(velocityX, velocityY)
-    }
-
-    override fun onStopNestedScroll(target: View) {
-        super.onStopNestedScroll(target)
-    }
-
     override fun onStopNestedScroll(target: View, type: Int) {
         if (type == 1) {
             if (target == rev1) {
@@ -137,49 +130,6 @@ class CjlNest @JvmOverloads constructor(
         super.onStopNestedScroll(target, type)
     }
 
-    // 子组件消费不完的会再给父组件
-    override fun onNestedScroll(
-        target: View,
-        dxConsumed: Int,
-        dyConsumed: Int,
-        dxUnconsumed: Int,
-        dyUnconsumed: Int,
-        type: Int,
-        consumed: IntArray
-    ) {
-        super.onNestedScroll(
-            target,
-            dxConsumed,
-            dyConsumed,
-            dxUnconsumed,
-            dyUnconsumed,
-            type,
-            consumed
-        )
-    }
-
-    override fun onNestedPreFling(target: View, velocityX: Float, velocityY: Float): Boolean {
-        return super.onNestedPreFling(target, velocityX, velocityY)
-    }
-
-    override fun onNestedFling(
-        target: View,
-        velocityX: Float,
-        velocityY: Float,
-        consumed: Boolean
-    ): Boolean {
-        return super.onNestedFling(target, velocityX, velocityY, consumed)
-    }
-
-    // 父元素级别的滚动停止
-    override fun stopNestedScroll() {
-        super.stopNestedScroll()
-    }
-
-    // 父元素级别的滚动停止
-    override fun stopNestedScroll(type: Int) {
-        super.stopNestedScroll(type)
-    }
 }
 
 fun cloge(msg: String) {
