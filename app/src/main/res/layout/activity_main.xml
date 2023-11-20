@@ -20,12 +20,12 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rev1"
                 android:layout_width="match_parent"
-                android:layout_height="627dp"
+                android:layout_height="727dp"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
             <com.example.nestedrev.CjlNestForVec
                 android:layout_width="match_parent"
-                android:layout_height="300dp"
+                android:layout_height="0dp"
                 android:background="#C1FFAA"
                 android:visibility="visible">
 
@@ -38,8 +38,8 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rev2"
                 android:layout_width="match_parent"
-                android:layout_height="627dp"
-                android:background="#FF9B9B"
+                android:layout_height="727dp"
+                android:background="#0054FF"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
         </LinearLayout>
     </com.example.nestedrev.CjlNest>

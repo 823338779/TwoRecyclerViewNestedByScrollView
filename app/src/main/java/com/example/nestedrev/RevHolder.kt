@@ -27,8 +27,8 @@ class RevHolder(val nestView: CjlNest, val rev: RecyclerView, val name: String) 
             mScrollerYObj = mScrollerY[obj2]
             mCurrVelocity = mScrollerYObj!!.javaClass.getDeclaredField("mCurrVelocity")
             mCurrVelocity?.isAccessible = true
-        } catch (unused: Throwable) {
-        }
+        } catch (unused: Throwable) { }
+
         rev.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 Log.e("change", "${name}: ${getCjlState(newState)}")
@@ -61,7 +61,6 @@ class RevHolder(val nestView: CjlNest, val rev: RecyclerView, val name: String) 
 
             override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {
             }
-
         })
     }
 

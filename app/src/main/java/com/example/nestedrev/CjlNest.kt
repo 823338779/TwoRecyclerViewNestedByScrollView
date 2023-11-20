@@ -3,6 +3,7 @@ package com.example.nestedrev
 import android.content.Context
 import android.util.AttributeSet
 import android.util.Log
+import android.view.MotionEvent
 import android.view.View
 import android.widget.LinearLayout
 import androidx.core.view.ViewCompat
@@ -44,19 +45,14 @@ class CjlNest @JvmOverloads constructor(
     // 标记手指按下去的时候是否正在滚动
     val downWhenScrolling = AtomicBoolean(false)
 
-
-    override fun startNestedScroll(axes: Int): Boolean {
-        return super.startNestedScroll(axes)
-    }
-
-    override fun startNestedScroll(axes: Int, type: Int): Boolean {
-        return super.startNestedScroll(axes, type)
+    override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {
+        if (ev.action == MotionEvent.ACTION_DOWN) {
+            downWhenScrolling.set(rev1!!.scrollState != 0 || rev2!!.scrollState != 0)
+        }
+        return super.onInterceptTouchEvent(ev)
     }
 
     override fun onNestedScrollAccepted(child: View, target: View, axes: Int, type: Int) {
-        if (type == 0) {
-            downWhenScrolling.set(rev1!!.scrollState != 0 || rev2!!.scrollState != 0)
-        }
         // 如果是touch类型的话, 就需要手动停止. 防止两个RecyclerView同时在fling[这个很关键]
         if (type == ViewCompat.TYPE_TOUCH) {
             if (target == rev1) {
@@ -68,16 +64,9 @@ class CjlNest @JvmOverloads constructor(
         super.onNestedScrollAccepted(child, target, axes, type)
     }
 
-    override fun onStartNestedScroll(child: View, target: View, axes: Int, type: Int): Boolean {
-        return super.onStartNestedScroll(child, target, axes, type)
-    }
-
-    override fun onNestedPreScroll(target: View, dx: Int, dy: Int, consumed: IntArray) {
-        super.onNestedPreScroll(target, dx, dy, consumed)
-    }
-
     // consumed表示父组件先消费多少, x, y, 剩余的会转给子组件
     override fun onNestedPreScroll(target: View, dx: Int, dy: Int, consumed: IntArray, type: Int) {
+        cloge("${getName(target)}, ${dy}, ${rev1?.scrollState}, ${rev2?.scrollState}")
         super.onNestedPreScroll(target, dx, dy, consumed, type)
         if (showUpper(dy)) {
             /**
@@ -107,37 +96,6 @@ class CjlNest @JvmOverloads constructor(
         }
     }
 
-    override fun dispatchNestedPreFling(velocityX: Float, velocityY: Float): Boolean {
-        return super.dispatchNestedPreFling(velocityX, velocityY)
-    }
-
-    override fun onStopNestedScroll(target: View) {
-        super.onStopNestedScroll(target)
-    }
-
-    override fun onStopNestedScroll(target: View, type: Int) {
-        if (type == 1) {
-            if (target == rev1) {
-                if (rev2!!.canScrollVertically(revHolder1!!.getVelocityValue().toInt())) {
-                    rev2!!.fling(0, revHolder1!!.getVelocityValue().toInt())
-                }
-            } else if (target == rev2) {
-                if (rev1!!.canScrollVertically(revHolder2!!.getVelocityValue().toInt())) {
-                    rev1!!.fling(0, revHolder2!!.getVelocityValue().toInt())
-                }
-            } else if(target is CjlNestForVec){
-                val vy = target.getVelocityValue().toInt()
-                if (rev2!!.canScrollVertically(vy)) {
-                    rev2!!.fling(0,vy)
-                } else if (rev1!!.canScrollVertically(vy)) {
-                    rev1!!.fling(0, vy)
-                }
-            }
-        }
-        super.onStopNestedScroll(target, type)
-    }
-
-    // 子组件消费不完的会再给父组件
     override fun onNestedScroll(
         target: View,
         dxConsumed: Int,
@@ -156,29 +114,14 @@ class CjlNest @JvmOverloads constructor(
             type,
             consumed
         )
-    }
-
-    override fun onNestedPreFling(target: View, velocityX: Float, velocityY: Float): Boolean {
-        return super.onNestedPreFling(target, velocityX, velocityY)
-    }
-
-    override fun onNestedFling(
-        target: View,
-        velocityX: Float,
-        velocityY: Float,
-        consumed: Boolean
-    ): Boolean {
-        return super.onNestedFling(target, velocityX, velocityY, consumed)
-    }
-
-    // 父元素级别的滚动停止
-    override fun stopNestedScroll() {
-        super.stopNestedScroll()
-    }
-
-    // 父元素级别的滚动停止
-    override fun stopNestedScroll(type: Int) {
-        super.stopNestedScroll(type)
+        val leftDy = dyUnconsumed - consumed[1]
+        if (target == rev1 && leftDy > 0 && rev2?.canScrollVertically(leftDy) == true) {
+            rev2?.scrollBy(0, leftDy)
+            consumed[1] += leftDy
+        } else if (target == rev2 && leftDy < 0 && rev1?.canScrollVertically(leftDy) == true) {
+            rev1?.scrollBy(0, leftDy)
+            consumed[1] += leftDy
+        }
     }
 }
 

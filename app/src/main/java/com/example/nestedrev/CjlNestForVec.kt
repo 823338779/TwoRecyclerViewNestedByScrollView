@@ -15,11 +15,6 @@ class CjlNestForVec @JvmOverloads constructor(
 
     init {
         try {
-            // 用反射获取 flinger
-//            val mViewFlinger = RecyclerView::class.java.getDeclaredField("mViewFlinger")
-//            mViewFlinger.isAccessible = true
-//            val obj = mViewFlinger[rev]
-            // 用反射获取 flinger中的scroller
             val mOverScroller = NestedScrollView::class.java.getDeclaredField("mScroller")
             mOverScroller.isAccessible = true
             val obj2 = mOverScroller[this]
@@ -35,8 +30,7 @@ class CjlNestForVec @JvmOverloads constructor(
     }
 
     fun getVelocityValue(): Float {
-        val res = ((mCurrVelocity?.get(mScrollerYObj) as? Float) ?: 0F) * 0.7f
+        val res = ((mCurrVelocity?.get(mScrollerYObj) as? Float) ?: 0F)
         return res
     }
-
 }
