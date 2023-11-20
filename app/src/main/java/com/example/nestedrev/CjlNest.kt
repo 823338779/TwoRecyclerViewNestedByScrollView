@@ -68,17 +68,9 @@ class CjlNest @JvmOverloads constructor(
         super.onNestedScrollAccepted(child, target, axes, type)
     }
 
-    override fun onStartNestedScroll(child: View, target: View, axes: Int, type: Int): Boolean {
-        return super.onStartNestedScroll(child, target, axes, type)
-    }
-
-    override fun onNestedPreScroll(target: View, dx: Int, dy: Int, consumed: IntArray) {
-        super.onNestedPreScroll(target, dx, dy, consumed)
-    }
-
     // consumed表示父组件先消费多少, x, y, 剩余的会转给子组件
     override fun onNestedPreScroll(target: View, dx: Int, dy: Int, consumed: IntArray, type: Int) {
-        cloge("${getName(target)}, ${dy}")
+        cloge("${getName(target)}, ${dy}, ${rev1?.scrollState}, ${rev2?.scrollState}")
         super.onNestedPreScroll(target, dx, dy, consumed, type)
         if (showUpper(dy)) {
             /**
@@ -108,28 +100,34 @@ class CjlNest @JvmOverloads constructor(
         }
     }
 
-    override fun onStopNestedScroll(target: View, type: Int) {
-        if (type == 1) {
-            if (target == rev1) {
-                if (rev2!!.canScrollVertically(revHolder1!!.getVelocityValue().toInt())) {
-                    rev2!!.fling(0, revHolder1!!.getVelocityValue().toInt())
-                }
-            } else if (target == rev2) {
-                if (rev1!!.canScrollVertically(revHolder2!!.getVelocityValue().toInt())) {
-                    rev1!!.fling(0, revHolder2!!.getVelocityValue().toInt())
-                }
-            } else if(target is CjlNestForVec){
-                val vy = target.getVelocityValue().toInt()
-                if (rev2!!.canScrollVertically(vy)) {
-                    rev2!!.fling(0,vy)
-                } else if (rev1!!.canScrollVertically(vy)) {
-                    rev1!!.fling(0, vy)
-                }
-            }
+    override fun onNestedScroll(
+        target: View,
+        dxConsumed: Int,
+        dyConsumed: Int,
+        dxUnconsumed: Int,
+        dyUnconsumed: Int,
+        type: Int,
+        consumed: IntArray
+    ) {
+        super.onNestedScroll(
+            target,
+            dxConsumed,
+            dyConsumed,
+            dxUnconsumed,
+            dyUnconsumed,
+            type,
+            consumed
+        )
+        val leftDy = dyUnconsumed - consumed[1]
+        if (target == rev1 && leftDy > 0 && rev2?.canScrollVertically(leftDy) == true) {
+            rev2?.scrollBy(0, leftDy)
+            consumed[1] += leftDy
+        } else if (target == rev2 && leftDy < 0 && rev1?.canScrollVertically(leftDy) == true) {
+            rev1?.scrollBy(0, leftDy)
+            consumed[1] += leftDy
         }
-        super.onStopNestedScroll(target, type)
-    }
 
+    }
 }
 
 fun cloge(msg: String) {
