@@ -3,6 +3,7 @@ package com.example.nestedrev
 import android.content.Context
 import android.util.AttributeSet
 import android.util.Log
+import android.view.MotionEvent
 import android.view.View
 import android.widget.LinearLayout
 import androidx.core.view.ViewCompat
@@ -44,19 +45,14 @@ class CjlNest @JvmOverloads constructor(
     // 标记手指按下去的时候是否正在滚动
     val downWhenScrolling = AtomicBoolean(false)
 
-
-    override fun startNestedScroll(axes: Int): Boolean {
-        return super.startNestedScroll(axes)
-    }
-
-    override fun startNestedScroll(axes: Int, type: Int): Boolean {
-        return super.startNestedScroll(axes, type)
+    override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {
+        if (ev.action == MotionEvent.ACTION_DOWN) {
+            downWhenScrolling.set(rev1!!.scrollState != 0 || rev2!!.scrollState != 0)
+        }
+        return super.onInterceptTouchEvent(ev)
     }
 
     override fun onNestedScrollAccepted(child: View, target: View, axes: Int, type: Int) {
-        if (type == 0) {
-            downWhenScrolling.set(rev1!!.scrollState != 0 || rev2!!.scrollState != 0)
-        }
         // 如果是touch类型的话, 就需要手动停止. 防止两个RecyclerView同时在fling[这个很关键]
         if (type == ViewCompat.TYPE_TOUCH) {
             if (target == rev1) {
@@ -126,7 +122,6 @@ class CjlNest @JvmOverloads constructor(
             rev1?.scrollBy(0, leftDy)
             consumed[1] += leftDy
         }
-
     }
 }
 

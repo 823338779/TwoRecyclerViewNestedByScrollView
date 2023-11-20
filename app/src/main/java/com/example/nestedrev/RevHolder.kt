@@ -61,7 +61,6 @@ class RevHolder(val nestView: CjlNest, val rev: RecyclerView, val name: String) 
 
             override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {
             }
-
         })
     }
 
