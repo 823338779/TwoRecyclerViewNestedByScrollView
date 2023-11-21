@@ -3,6 +3,7 @@ package com.example.nestedrev
 import android.content.Context
 import android.util.AttributeSet
 import android.util.Log
+import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
 import android.widget.LinearLayout
@@ -45,12 +46,12 @@ class CjlNest @JvmOverloads constructor(
     // 标记手指按下去的时候是否正在滚动
     val downWhenScrolling = AtomicBoolean(false)
 
-    override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {
-        if (ev.action == MotionEvent.ACTION_DOWN) {
-            downWhenScrolling.set(rev1!!.scrollState != 0 || rev2!!.scrollState != 0)
-        }
-        return super.onInterceptTouchEvent(ev)
-    }
+//    override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {
+//        if (ev.action == MotionEvent.ACTION_DOWN) {
+//            downWhenScrolling.set(rev1!!.scrollState != 0 || rev2!!.scrollState != 0)
+//        }
+//        return super.onInterceptTouchEvent(ev)
+//    }
 
     override fun onNestedScrollAccepted(child: View, target: View, axes: Int, type: Int) {
         // 如果是touch类型的话, 就需要手动停止. 防止两个RecyclerView同时在fling[这个很关键]
@@ -123,6 +124,22 @@ class CjlNest @JvmOverloads constructor(
             consumed[1] += leftDy
         }
     }
+    var mGestureDetector = GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
+        override fun onSingleTapUp(e: MotionEvent): Boolean {
+            return true
+        }
+
+        override fun onLongPress(e: MotionEvent) {
+        }
+    })
+
+    override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {
+        if (mGestureDetector.onTouchEvent(ev)) {
+            return true
+        }
+        return super.onInterceptTouchEvent(ev)
+    }
+
 }
 
 fun cloge(msg: String) {
